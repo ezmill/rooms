@@ -21,7 +21,7 @@ function initScene(){
 
 
     camera = new THREE.PerspectiveCamera(50, w / h, 1, 100000);
-    camera.position.z = 100;
+    camera.position.set(0,100,300);
     cameraRTT = new THREE.OrthographicCamera( w / - 2, w / 2, h / 2, h / - 2, -10000, 10000 );
 	cameraRTT.position.z = 100;
     scene = new THREE.Scene();
@@ -217,7 +217,7 @@ function createRoom(geometry, material){
 	room = new THREE.Mesh(geometry, material);
 	var scale = 40.0;
 	room.position.set(0,-25,10);
-	// room.rotation.set(0,0,44.7);
+	room.rotation.set(0,Math.PI,0);
 	room.scale.set(scale,scale,scale);
 	scene.add(room);
 }
