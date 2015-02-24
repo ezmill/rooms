@@ -1,17 +1,23 @@
 var FBObject = function(params){
+	//user-determined properties
+	this.w = params.w;
+	this.h = params.h;
+	this.x = params.x;
+	this.texture = params.texture;
+	this.vertexShader = params.vertexShader;
+	this.fragmentShader1 = params.fragmentShader1;
+	this.fragmentShader2 = params.fragmentShader2;
+	this.mainScene = params.mainScene;
+	this.model;
+	this.extraTex = params.extraTex;
+	//built in properties
 	this.scene1;
 	this.scene2;
-	this.w, this.h;
 	this.renderTargets = [];
 	this.planeGeometry;
 	this.mesh1, this.mesh2;
 	this.material1, this.material2;
-	this.vertexShader, this.fragmentShader1, this.fragmentShader2;
 	this.uniforms, this.uniforms1, this.uniforms2;
-	this.texture;
-	this.model;
-	this.mainScene;
-	this.x;
 	this.init = function(){
 		this.initScenes();
 		this.initRTTs(this.w, this.h);
@@ -57,7 +63,11 @@ var FBObject = function(params){
 	// }
 
 	this.createBackgroundScene = function(){
-		var tex = THREE.ImageUtils.loadTexture(this.texture);
+		if(!this.extraTex){
+			var tex = THREE.ImageUtils.loadTexture(this.texture);
+		}  else {
+			var tex = this.extraTex;
+		}
 		this.uniforms1 = {
 			texture: {type: "t", value: tex},
 			time: this.uniforms.time,
@@ -110,10 +120,11 @@ var FBObject = function(params){
 		})
 	}
 	this.addObject = function(x){
-		var geometry = new THREE.BoxGeometry(1000,1000,1000);
+		// var geometry = new THREE.BoxGeometry(1000,1000,1000);
+		// var geometry = new THREE.BoxGeometry(1000,1000,1000);
 		var material = new THREE.MeshBasicMaterial({map: this.renderTargets[1]});
-		var mesh = new THREE.Mesh(geometry, material);
-		mesh.position.set(x,0,-100);
+		var mesh = new THREE.Mesh(this.planeGeometry, material);
+		mesh.position.set(x,0,0);
 		this.mainScene.add(mesh);
 	}
 	this.loadModelMaterial = function(rtt){

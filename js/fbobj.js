@@ -5,7 +5,7 @@ var w = window.innerWidth;
 var h = window.innerHeight;
 var mouseX, mouseY;
 var mapMouseX, mapMouseY;
-var FBObject1, FBObject2, FBObject3;
+var FBObject1, FBObject2;
 var globalUniforms;
 initScene();
 function initScene(){
@@ -13,7 +13,7 @@ function initScene(){
     document.body.appendChild(container);
 
     camera = new THREE.PerspectiveCamera(50, w / h, 1, 100000);
-    camera.position.set(0,0, 2000);
+    camera.position.set(0,0, 1800);
     cameraRTT = new THREE.OrthographicCamera( w / - 2, w / 2, h / 2, h / - 2, -10000, 10000 );
 	cameraRTT.position.z = 100;
 	controls = new THREE.OrbitControls(camera);
@@ -26,29 +26,6 @@ function initScene(){
 
     mainScene = new THREE.Scene();
 
-    FBObject1 = new FBObject();
-	FBObject2 = new FBObject();
-	FBObject3 = new FBObject();
-
-	FBObject1.mainScene = mainScene;
-	FBObject2.mainScene = mainScene;
-
-	FBObject1.texture = "textures/1.jpg";
-	FBObject2.texture = "textures/1.jpg";
-
-	FBObject1.w = w;
-	FBObject2.w = w;
-	FBObject1.h = h;
-	FBObject2.h = h;
-	FBObject1.x = 1000;
-	FBObject2.x = -1000;
-	FBObject1.vertexShader = "vs";
-	FBObject2.vertexShader = "vs";
-	FBObject1.fragmentShader1 = "fs";
-	FBObject2.fragmentShader1 = "syrup-fs";
-	FBObject1.fragmentShader2 = "fs-2";
-	FBObject2.fragmentShader2 = "syrup-fs-2";
-
     globalUniforms = {
 		time: { type: "f", value: 0.0 } ,
 		resolution: {type: "v2", value: new THREE.Vector2(w,h)},
@@ -59,11 +36,33 @@ function initScene(){
 		tv_resolution: {type: "f", value: 640.0},
 		tv_resolution_y: {type: "f", value: 1600.0}
 	}
-	FBObject1.uniforms = globalUniforms;
-	FBObject2.uniforms = globalUniforms;
 
+	FBObject1 = new FBObject({
+		w: w,
+    	h: h, 
+    	x: -w/2,
+    	texture: "textures/seed.png",
+    	vertexShader: "vs",
+    	fragmentShader1: "syrup-fs",
+    	fragmentShader2: "syrup-fs-2",
+    	mainScene: mainScene
+	});
+	FBObject1.uniforms = globalUniforms;
 	FBObject1.init(w,h);
+	FBObject2 = new FBObject({
+		w: w,
+    	h: h, 
+    	x: w/2,
+    	texture: "textures/me.jpg",
+    	vertexShader: "vs",
+    	fragmentShader1: "fs",
+    	fragmentShader2: "flow",
+    	mainScene: mainScene,
+    	extraTex: FBObject1.renderTargets[1]
+	});
+	FBObject2.uniforms = globalUniforms;
 	FBObject2.init(w,h);
+	FBObject1.extraTex = FBObject2.renderTargets[1];
 
     document.addEventListener('mousemove', onDocumentMouseMove, false);
     document.addEventListener('mousedown', onDocumentMouseDown, false);
@@ -96,21 +95,14 @@ function onDocumentMouseMove(event){
     resX = map(mouseX, window.innerWidth, 4000.0,2000.0);
     resY = map(mouseX, window.innerWidth, 10000.0,1600.0);
 	globalUniforms.mouseX.value = mapMouseX;
-	globalUniforms.mouseX.value = mapMouseX;
-	globalUniforms.mouseY.value = mapMouseY;
 	globalUniforms.mouseY.value = mapMouseY;
 	globalUniforms.tv_resolution.value = resX;
 	globalUniforms.tv_resolution_y.value = resY;
 
 
+
 }
 function onWindowResize( event ) {
-	globalUniforms.resolution.value.x = window.innerWidth;
-	globalUniforms.resolution.value.y = window.innerHeight;
-	globalUniforms.resolution.value.x = window.innerWidth;
-	globalUniforms.resolution.value.y = window.innerHeight;
-	globalUniforms.resolution.value.x = window.innerWidth;
-	globalUniforms.resolution.value.y = window.innerHeight;
 	globalUniforms.resolution.value.x = window.innerWidth;
 	globalUniforms.resolution.value.y = window.innerHeight;
 	w = window.innerWidth;
@@ -133,12 +125,10 @@ function render(){
     camera.lookAt(mainScene.position);
 
 	globalUniforms.time.value = time;
-	globalUniforms.time.value = time;
-	globalUniforms.time.value = time;
-	globalUniforms.time.value = time;
 
     FBObject1.passTex();
     FBObject2.passTex();
+
 
 
     inc++
@@ -151,16 +141,20 @@ function render(){
 		translate = true;
 	}
 	if(translate = true){
-		FBObject1.scale(1.1);
-		FBObject2.scale(1.01);
+		// FBObject1.scale(1.01);
+		// FBObject2.scale(0.999);
+
 	}
+		    // FBObject1.material1.uniforms.texture.value = FBObject2.renderTargets[0];
+
 
 	FBObject1.render(cameraRTT);
 	FBObject2.render(cameraRTT);
 	renderer.render(mainScene, camera);
 
-	FBObject1.cycle();globalUniforms
+	FBObject1.cycle();
 	FBObject2.cycle();
+
 
 
 }
