@@ -320,9 +320,9 @@ function render(){
 		quad1_2.scale.z = 1.1;
 	}
 	renderer.render(sceneFB, cameraRTT, rtFB, true);
-	renderer.render(sceneFB, cameraRTT, rtFinal, true);
+	// renderer.render(sceneFB, cameraRTT, rtFinal, true);
 	renderer.render(sceneFB2, cameraRTT, rtFB2, true);
-	renderer.render(sceneFB2, cameraRTT, rtFinal2, true);
+	// renderer.render(sceneFB2, cameraRTT, rtFinal2, true);
 	renderer.render(scene, camera);
 
 	var a = rtFB;
