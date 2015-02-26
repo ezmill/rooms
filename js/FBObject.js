@@ -28,7 +28,7 @@ var FBObject = function(params){
 		this.createBackgroundScene();
 		this.createFeedbackScene();
 		// this.loadModel(this.model);
-		this.addObject(this.x);
+		// this.addObject(this.x);
 	}
 	this.initScenes = function(){
 		this.scene1 = new THREE.Scene();
